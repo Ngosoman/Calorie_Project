@@ -1,6 +1,3 @@
-
-
-# Create your views here.
 from django.shortcuts import render, redirect
 from .models import FoodItem
 from django.utils import timezone
