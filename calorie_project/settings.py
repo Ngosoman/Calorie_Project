@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from decouple import config
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,12 +24,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=True, cast=bool)
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
 
 
 # Application definition
@@ -77,12 +80,12 @@ WSGI_APPLICATION = 'calorie_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': config('DATABASE_NAME', default='db.sqlite3'),
-        'USER': config('DATABASE_USER', default=''),
-        'PASSWORD': config('DATABASE_PASSWORD', default=''),
-        'HOST': 'localhost',
-        'PORT': '5432',
+       'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DATABASE_URL').rsplit('/', 1)[-1],
+        'USER': os.getenv('DATABASE_URL').split('//')[1].split(':')[0],
+        'PASSWORD': os.getenv('DATABASE_URL').split(':')[2].split('@')[0],
+        'HOST': os.getenv('DATABASE_URL').split('@')[1].split(':')[0],
+        'PORT': os.getenv('DATABASE_URL').split(':')[2].split('@')[1].split('/')[0],
     }
 }
 
